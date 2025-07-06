@@ -15,6 +15,7 @@ import { useChatHistory } from '@/context/chat-history-context';
 import { Global } from '@emotion/react';
 import { useConfig } from '@/context/character-config-context';
 import { useWebSocket } from '@/context/websocket-context';
+import ReactECharts from 'echarts-for-react';
 
 // Type definitions
 interface MessageListProps {
@@ -74,7 +75,26 @@ function ChatHistoryPanel(): JSX.Element {
   const userName = "Me";
 
   const validMessages = messages.filter((msg) => msg.content && msg.content.trim().length > 0);
-
+  const options = {
+    grid: { top: 8, right: 8, bottom: 24, left: 36 },
+    xAxis: {
+      type: 'category',
+      data: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+    },
+    yAxis: {
+      type: 'value',
+    },
+    series: [
+      {
+        data: [820, 932, 901, 934, 1290, 1330, 1320],
+        type: 'line',
+        smooth: true,
+      },
+    ],
+    tooltip: {
+      trigger: 'axis',
+    },
+  };
   return (
     <Box
       h="full"
@@ -95,41 +115,49 @@ function ChatHistoryPanel(): JSX.Element {
                 fontSize="sm"
               >
                 No messages yet. Start a conversation!
-              </Box>
+              </Box>             
             ) : (
               validMessages.map((msg) => (
-                <ChatMessage
-                  key={msg.id}
-                  model={{
-                    message: msg.content,
-                    sentTime: msg.timestamp,
-                    sender: msg.role === 'ai'
-                      ? (msg.name || confName || 'AI')
-                      : userName,
-                    direction: msg.role === 'ai' ? 'incoming' : 'outgoing',
-                    position: 'single',
-                  }}
-                  avatarPosition={msg.role === 'ai' ? 'tl' : 'tr'}
-                  avatarSpacer={false}
-                >
-                  <ChatAvatar>
-                    {msg.role === 'ai' ? (
-                      msg.avatar ? (
-                        <img
-                          src={`${baseUrl}/avatars/${msg.avatar}`}
-                          alt="avatar"
-                          style={{ width: '100%', height: '100%', borderRadius: '50%' }}
-                        />
+                  <ChatMessage
+                    key={msg.id}
+                    model={{
+                      message: msg.content,
+                      sentTime: msg.timestamp,
+                      sender: msg.role === 'ai'
+                        ? (msg.name || confName || 'AI')
+                        : userName,
+                      direction: msg.role === 'ai' ? 'incoming' : 'outgoing',
+                      position: 'single',
+                      type: "custom"
+                    }}
+                    avatarPosition={msg.role === 'ai' ? 'tl' : 'tr'}
+                    avatarSpacer={false}
+                  >
+                    <ChatMessage.CustomContent>
+                      {msg.content}
+
+                      {msg.role === 'ai' && (
+                    <ReactECharts option={options} notMerge={true} lazyUpdate={true} style={{ height: 240 }} />
+                      )}
+                  </ChatMessage.CustomContent>
+                    <ChatAvatar>
+                      {msg.role === 'ai' ? (
+                        msg.avatar ? (
+                          <img
+                            src={`${baseUrl}/avatars/${msg.avatar}`}
+                            alt="avatar"
+                            style={{ width: '100%', height: '100%', borderRadius: '50%' }}
+                          />
+                        ) : (
+                          (msg.name && msg.name[0].toUpperCase()) ||
+                          (confName && confName[0].toUpperCase()) ||
+                          'A'
+                        )
                       ) : (
-                        (msg.name && msg.name[0].toUpperCase()) ||
-                        (confName && confName[0].toUpperCase()) ||
-                        'A'
-                      )
-                    ) : (
-                      userName[0].toUpperCase()
-                    )}
-                  </ChatAvatar>
-                </ChatMessage>
+                        userName[0].toUpperCase()
+                      )}
+                    </ChatAvatar>
+                  </ChatMessage>
               ))
             )}
           </ChatMessageList>
