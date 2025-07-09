@@ -20,7 +20,7 @@ export const layoutStyles = {
   },
   sidebar: {
     position: 'relative' as const,
-    width: { base: '100%', md: '440px' },
+    width: { base: '100%', md: '50%' },
     height: { base: 'auto', md: '100%' },
     bg: 'gray.800',
     borderRight: '1px solid',

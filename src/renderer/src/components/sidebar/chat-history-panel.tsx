@@ -134,10 +134,19 @@ function ChatHistoryPanel(): JSX.Element {
                     avatarSpacer={false}
                   >
                     <ChatMessage.CustomContent>
-                      {msg.content}
-                      {msg.role === 'ai' && msg.visual_type === 'chart' && (
-                        <ReactECharts option={msg.visual_data} notMerge={true} lazyUpdate={true} style={{ height: 240 }} />
-                      )}
+                    {
+                      msg.role === 'human' ? (
+                        msg.content
+                      ) : msg.visual_type === 'chart' ? (
+                        <ReactECharts option={msg.visual_data} notMerge={true} lazyUpdate={true} style={{ height: 240,width: 600 }} />
+                      ) : msg.visual_type === 'table' ? (
+                        typeof msg.visual_data === 'string'
+                          ? msg.visual_data
+                          : JSON.stringify(msg.visual_data)
+                      ) : (
+                        msg.content
+                      )
+                    }
                   </ChatMessage.CustomContent>
                     <ChatAvatar>
                       {msg.role === 'ai' ? (

@@ -118,8 +118,8 @@ export function ChatHistoryProvider({ children }: { children: React.ReactNode })
         timestamp: new Date().toISOString(),
         name,
         avatar,
-        visualType,
-        visualData
+        visual_type: visualType,
+        visual_data: visualData
       }];
     });
   }, []);
