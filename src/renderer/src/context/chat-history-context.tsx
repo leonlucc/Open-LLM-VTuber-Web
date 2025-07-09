@@ -14,6 +14,7 @@ interface ChatHistoryState {
   currentHistoryUid: string | null;
   appendHumanMessage: (content: string) => void;
   appendAIMessage: (content: string, name?: string, avatar?: string) => void;
+  appendAIVisualMessage: (visualType: string, visualData: object, name?: string, avatar?: string) => void;
   setMessages: (messages: Message[]) => void;
   setHistoryList: (
     value: HistoryInfo[] | ((prev: HistoryInfo[]) => HistoryInfo[])
@@ -80,7 +81,7 @@ export function ChatHistoryProvider({ children }: { children: React.ReactNode })
   const appendAIMessage = useCallback((content: string, name?: string, avatar?: string) => {
     setMessages((prevMessages) => {
       const lastMessage = prevMessages[prevMessages.length - 1];
-
+      console.log('appendAIMessage:',content, name)
       // If forceNewMessage is true or last message is not from AI, create new message
       if (forceNewMessage || !lastMessage || lastMessage.role !== 'ai') {
         setForceNewMessage(false); // Reset the flag
@@ -93,7 +94,7 @@ export function ChatHistoryProvider({ children }: { children: React.ReactNode })
           avatar,
         }];
       }
-
+      
       // Otherwise, merge with last AI message
       return [
         ...prevMessages.slice(0, -1),
@@ -105,6 +106,23 @@ export function ChatHistoryProvider({ children }: { children: React.ReactNode })
       ];
     });
   }, [forceNewMessage, setForceNewMessage]);
+
+  const appendAIVisualMessage = useCallback((visualType: string, visualData: object, name?: string, avatar?: string) => {
+    setMessages((prevMessages) => {
+      setForceNewMessage(false); // Reset the flag
+      console.log('appendAIVisualMessage:',visualType, visualData)
+      return [...prevMessages, {
+        id: Date.now().toString(),
+        content: '图表内容如下：',
+        role: 'ai',
+        timestamp: new Date().toISOString(),
+        name,
+        avatar,
+        visualType,
+        visualData
+      }];
+    });
+  }, []);
 
   /**
    * Update the history list with the latest message
@@ -156,6 +174,7 @@ export function ChatHistoryProvider({ children }: { children: React.ReactNode })
       currentHistoryUid,
       appendHumanMessage,
       appendAIMessage,
+      appendAIVisualMessage,
       setMessages,
       setHistoryList,
       setCurrentHistoryUid,
@@ -172,6 +191,7 @@ export function ChatHistoryProvider({ children }: { children: React.ReactNode })
       currentHistoryUid,
       appendHumanMessage,
       appendAIMessage,
+      appendAIVisualMessage,
       updateHistoryList,
       fullResponse,
       appendResponse,

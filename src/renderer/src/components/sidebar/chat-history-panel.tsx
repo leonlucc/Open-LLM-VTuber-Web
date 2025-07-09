@@ -128,16 +128,15 @@ function ChatHistoryPanel(): JSX.Element {
                         : userName,
                       direction: msg.role === 'ai' ? 'incoming' : 'outgoing',
                       position: 'single',
-                      type: "custom"
+                      type: "custom",
                     }}
                     avatarPosition={msg.role === 'ai' ? 'tl' : 'tr'}
                     avatarSpacer={false}
                   >
                     <ChatMessage.CustomContent>
                       {msg.content}
-
-                      {msg.role === 'ai' && (
-                    <ReactECharts option={options} notMerge={true} lazyUpdate={true} style={{ height: 240 }} />
+                      {msg.role === 'ai' && msg.visual_type === 'chart' && (
+                        <ReactECharts option={msg.visual_data} notMerge={true} lazyUpdate={true} style={{ height: 240 }} />
                       )}
                   </ChatMessage.CustomContent>
                     <ChatAvatar>

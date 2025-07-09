@@ -32,6 +32,8 @@ export interface Message {
   timestamp: string;
   name?: string;
   avatar?: string;
+  visual_type?: string;
+  visual_data?: object;
 }
 
 export interface Actions {
@@ -63,6 +65,8 @@ export interface MessageEvent {
   client_uid?: string;
   forwarded?: boolean;
   display_text?: DisplayText;
+  visual_type?: string;
+  visual_data?: object;
 }
 
 class WebSocketService {

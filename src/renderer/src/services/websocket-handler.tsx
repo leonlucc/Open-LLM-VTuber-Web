@@ -27,7 +27,7 @@ function WebSocketHandler({ children }: { children: React.ReactNode }) {
   const { aiState, setAiState, backendSynthComplete, setBackendSynthComplete } = useAiState();
   const { setModelInfo } = useLive2DConfig();
   const { setSubtitleText } = useSubtitle();
-  const { clearResponse, setForceNewMessage } = useChatHistory();
+  const { clearResponse, setForceNewMessage, appendAIVisualMessage } = useChatHistory();
   const { addAudioTask } = useAudioTask();
   const bgUrlContext = useBgUrl();
   const { confUid, setConfName, setConfUid, setConfigFiles } = useConfig();
@@ -161,6 +161,11 @@ function WebSocketHandler({ children }: { children: React.ReactNode }) {
             expressions: message.actions?.expressions || null,
             forwarded: message.forwarded || false,
           });
+        }
+        break;
+      case 'visualization':
+        if (message.visual_type && message.visual_data && message.display_text) {
+          appendAIVisualMessage(message.visual_type, message.visual_data, message.display_text.name, message.display_text.avatar)
         }
         break;
       case 'history-data':
