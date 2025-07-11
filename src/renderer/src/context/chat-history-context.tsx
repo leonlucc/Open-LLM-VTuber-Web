@@ -113,7 +113,7 @@ export function ChatHistoryProvider({ children }: { children: React.ReactNode })
       console.log('appendAIVisualMessage:',visualType, visualData)
       return [...prevMessages, {
         id: Date.now().toString(),
-        content: '图表内容如下：',
+        content: '查询结果如下：',
         role: 'ai',
         timestamp: new Date().toISOString(),
         name,
